@@ -29,4 +29,4 @@ jobs:
 
       - name: Run Jest tests
         working-directory: ./nextjs
-        run: npm test
+        run: npm test-ci

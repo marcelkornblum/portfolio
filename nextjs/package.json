@@ -8,6 +8,7 @@
         "start": "next start",
         "lint": "next lint",
         "format": "prettier --write .",
+        "test-ci": "jest",
         "test": "jest --watch",
         "export": "next build && next export"
     },
