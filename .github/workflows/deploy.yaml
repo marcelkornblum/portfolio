@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./nextjs
-        run: npm ci
+        run: npm install
 
       - name: Build and export
         working-directory: ./nextjs
