@@ -23,10 +23,6 @@ jobs:
         working-directory: ./nextjs
         run: npm install
 
-      - name: Copy env file
-        working-directory: ./nextjs
-        run: cp .env.ci .env.local
-
       - name: Build
         working-directory: ./nextjs
         run: npm run build
