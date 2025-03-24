@@ -20,10 +20,13 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
+        working-directory: ./nextjs
         run: npm ci
 
       - name: Run ESLint
+        working-directory: ./nextjs
         run: npm run lint
 
       - name: Run Jest tests
+        working-directory: ./nextjs
         run: npm test
