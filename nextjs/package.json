@@ -9,8 +9,7 @@
         "lint": "next lint",
         "format": "prettier --write .",
         "test-ci": "jest",
-        "test": "jest --watch",
-        "export": "next build && next export"
+        "test": "jest --watch"
     },
     "dependencies": {
         "@next/font": "^14.2.15",
