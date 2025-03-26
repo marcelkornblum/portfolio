@@ -34,7 +34,7 @@ const Project: React.FC<{ project: Project }> = ({ project }) => {
                         height={100}
                     />
                 )}
-                <p>{project.role.role}</p>
+                <p>{project.role?.role}</p>
                 <p>{format(new Date(project.date), 'MMM yyyy')}</p>
             </div>
             <div className="project-details">

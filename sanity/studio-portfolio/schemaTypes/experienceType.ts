@@ -20,16 +20,24 @@ export const experienceType = defineType({
         }),
         defineField({
             name: 'start',
-            type: 'datetime',
+            type: 'date',
         }),
         defineField({
             name: 'end',
-            type: 'datetime',
+            type: 'date',
         }),
         defineField({
             name: 'details',
             type: 'array',
             of: [{ type: 'block' }],
         }),
-    ],
+    ], orderings: [
+        {
+            title: 'Date, New',
+            name: 'startDesc',
+            by: [
+                { field: 'start', direction: 'desc' }
+            ]
+        }
+    ]
 })
