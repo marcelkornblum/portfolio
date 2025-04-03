@@ -74,6 +74,14 @@ export default function TimelineContent({ timeline: initialTimeline, selectedIte
         return typeMatch && employmentMatch;
     });
 
+    // const handleItemClick = (item: TimelineItem) => {
+    //     handleItemClick(item);
+    // };
+
+    // const handleClosePane = () => {
+    //     handleClosePane();
+    // };
+
     return (
         <div className='timeline-container'>
             <div className="timeline-fixed-date" ref={fixedDateRef}>

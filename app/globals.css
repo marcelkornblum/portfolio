@@ -148,7 +148,7 @@ a:focus {
     width: auto; /* Allow the date to take up space */
     overflow: visible; /* Show the date */
     transition: opacity 0.2s ease-in-out; /* Add a transition */
-    margin: 1.7em 0;
+    margin: 1.8em 0;
 }
 
 .timeline-item:hover .timeline-item-date {
@@ -190,45 +190,45 @@ a:focus {
     line-height: 1.5; /* Improved line height */
 }
 
-/* Detail Pane Styles */
-.detail-pane {
+/* Detail Pane Styles */.detail-pane {
     position: fixed;
     top: 0;
-    right: 0;
-    width: 400px;
+    /* right: -400px; Start off-screen to the right */
+    margin-left: 2rem;
+    width: 700px;
     height: 100vh;
     background-color: #fff;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
     z-index: 20;
-    transition: transform 0.3s ease-in-out;
-    transform: translateX(100%);
+    transform: translateX(100%); /* Initially hidden */
+    transition: transform 0.3s ease-in-out; /* Smooth transition */
     display: flex;
     flex-direction: column;
+    overflow-y: auto; /* Allow scrolling if content is too large */
 }
 
 .detail-pane.open {
-    transform: translateX(0);
+    transform: translateX(0); /* Slide in from the right */
 }
 
 .detail-pane-close {
     position: absolute;
     top: 1rem;
-    left: 1rem;
+    right: 1rem; /* Moved to the right */
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.5rem; /* Larger close button */
-    color: var(--dark-gray); /* Darker close button */
-    transition: color 0.2s ease-in-out; /* Hover effect */
+    font-size: 1.5rem;
+    color: var(--dark-gray);
+    transition: color 0.2s ease-in-out;
 }
 
 .detail-pane-close:hover {
-    color: var(--accent-color); /* Red on hover */
+    color: var(--accent-color);
 }
 
 .detail-pane-content {
     padding: 2rem;
-    overflow-y: auto;
 }
 
 .detail-pane-title {
