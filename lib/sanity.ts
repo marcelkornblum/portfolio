@@ -25,7 +25,7 @@ export interface TimelineItem {
         logo: any;
         link: string;
         sector: string;
-        _id: string; // Changed from slug to _id
+        _id: string;
     };
     is_contract?: boolean;
     projectTitle?: string;
@@ -34,6 +34,7 @@ export interface TimelineItem {
     course?: string;
     summary: any;
     details: any;
+    key: string; // Added key field
 }
 
 export async function getTimeline(): Promise<TimelineItem[]> {
@@ -52,7 +53,7 @@ export async function getTimeline(): Promise<TimelineItem[]> {
         logo,
         link,
         sector,
-        _id // Changed from "slug": slug.current to _id
+        _id
       },
 
       // Project fields
@@ -84,7 +85,7 @@ export async function getTimeline(): Promise<TimelineItem[]> {
                 logo: any;
                 link: string;
                 sector: string;
-                _id: string; // Changed from slug to _id
+                _id: string;
             };
             name?: string;
             date?: string;
@@ -103,12 +104,13 @@ export async function getTimeline(): Promise<TimelineItem[]> {
             type: item._type.charAt(0).toUpperCase() + item._type.slice(1) as 'Experience' | 'Project' | 'Education',
             summary: item.summary,
             details: item.details,
+            key: `${item._type}-${item._id}`, // Added key field
         };
 
         if (item._type === 'experience') {
             timelineItem.role = item.role;
             timelineItem.company = item.company;
-            timelineItem.company._id = item.company?._id; // Changed from slug to _id
+            timelineItem.company._id = item.company?._id;
             timelineItem.is_contract = item.is_contract;
         } else if (item._type === 'project') {
             timelineItem.projectTitle = item.name;
@@ -120,3 +122,5 @@ export async function getTimeline(): Promise<TimelineItem[]> {
         return timelineItem;
     });
 }
+
+// ... rest of your functions ...

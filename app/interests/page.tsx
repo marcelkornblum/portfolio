@@ -1,17 +1,13 @@
-import { getPassions } from '@/lib/sanity';
-import Passion from '../components/Passion';
+import { getInterests, Interest } from '@/lib/sanity';
+import InterestsContent from './InterestsContent';
 
-export default async function InterestsPage() {
-    const passions = await getPassions();
+// This is now a Server Component
+export default async function Interests() {
+    const interests = await getInterests();
 
     return (
-        <main className='passions'>
-            <h1>Interests, hobbies and passions</h1>
-            <div className='passions-list'>
-                {passions.map((passion: Passion) => (
-                    <Passion key={passion._id} passion={passion} />
-                ))}
-            </div>
+        <main>
+            <InterestsContent interests={interests} />
         </main>
     );
 }

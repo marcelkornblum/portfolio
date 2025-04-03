@@ -30,8 +30,9 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en" className={geistSans.variable}>
-            <body className='body'>
+        <html lang="en">
+            <body>
+                <div className='gradient-background' />
                 <Navbar />
                 {children}
             </body>

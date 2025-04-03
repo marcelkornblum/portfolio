@@ -1,17 +1,13 @@
-import { getAwards } from '@/lib/sanity';
-import Award from '../components/Award';
+import { getAwards, Award } from '@/lib/sanity';
+import AwardsContent from './AwardsContent';
 
-export default async function AwardsPage() {
+// This is now a Server Component
+export default async function Awards() {
     const awards = await getAwards();
 
     return (
-        <main className='awards'>
-            <h1>Awards</h1>
-            <div className='awards-list'>
-                {awards.map((award: Award) => (
-                    <Award key={award._id} award={award} />
-                ))}
-            </div>
+        <main>
+            <AwardsContent awards={awards} />
         </main>
     );
 }

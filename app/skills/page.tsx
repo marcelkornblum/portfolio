@@ -1,17 +1,13 @@
-import { getSkills } from '@/lib/sanity';
-import Skill from '../components/Skill';
+import { getSkills, Skill } from '@/lib/sanity';
+import SkillsContent from './SkillsContent';
 
-export default async function SkillsPage() {
+// This is now a Server Component
+export default async function Skills() {
     const skills = await getSkills();
 
     return (
-        <main className='skills'>
-            <h1>Skills</h1>
-            <div className='skills-list'>
-                {skills.map((skill: Skill) => (
-                    <Skill key={skill._id} skill={skill} />
-                ))}
-            </div>
+        <main>
+            <SkillsContent skills={skills} />
         </main>
     );
 }

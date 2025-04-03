@@ -1,24 +1,13 @@
-import { getAbout, getContact } from '@/lib/sanity';
-import AboutType from '../components/About';
-import ContactType from '../components/Contact';
+import { getContact, Contact } from '@/lib/sanity';
+import ContactContent from './ContactContent';
 
-export default async function ContactPage() {
-    const about = await getAbout();
+// This is now a Server Component
+export default async function Contact() {
     const contact = await getContact();
 
     return (
-        <main className='contact'>
-            <h1>Contact</h1>
-            <div className='contact-info'>
-                {contact.map((item: ContactType) => (
-                    <ContactType key={item._id} contact={item} />
-                ))}
-            </div>
-            <div className='about-info'>
-                {about.map((item: AboutType) => (
-                    <AboutType key={item._id} about={item} />
-                ))}
-            </div>
+        <main>
+            <ContactContent contact={contact} />
         </main>
     );
 }
