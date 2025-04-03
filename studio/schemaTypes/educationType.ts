@@ -22,6 +22,11 @@ export const educationType = defineType({
             type: 'date',
         }),
         defineField({
+            name: 'summary',
+            type: 'array',
+            of: [{ type: 'block' }],
+        }),
+        defineField({
             name: 'details',
             type: 'array',
             of: [{ type: 'block' }],

@@ -1,91 +1,122 @@
-import { client } from "../sanity.config";
-import { groq } from "next-sanity";
+// /lib/sanity.ts
 
-export async function getProjects() {
-    return client.fetch(groq`
-        *[_type == "project"] {
-            _id,
-            name,
-            date,
-            image,
-            details,
-            role-> {
-                role
-            }
+import { createClient, groq } from 'next-sanity';
+import { format, parseISO } from 'date-fns';
+
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
+const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION;
+
+export const client = createClient({
+    projectId,
+    dataset,
+    apiVersion,
+    useCdn: true,
+});
+
+export interface TimelineItem {
+    _id: string;
+    startDate: string | null;
+    endDate: string | null;
+    type: 'Experience' | 'Project' | 'Education';
+    role?: string;
+    company?: {
+        name: string;
+        logo: any;
+        link: string;
+        sector: string;
+        _id: string; // Changed from slug to _id
+    };
+    is_contract?: boolean;
+    projectTitle?: string;
+    projectLink?: string;
+    institution?: string;
+    course?: string;
+    summary: any;
+    details: any;
+}
+
+export async function getTimeline(): Promise<TimelineItem[]> {
+    const query = groq`
+    *[_type in ["experience", "project", "education"]] | order(coalesce(start, date) desc) {
+      _id,
+      _type,
+
+      // Experience fields
+      role,
+      is_contract,
+      start,
+      end,
+      company->{
+        name,
+        logo,
+        link,
+        sector,
+        _id // Changed from "slug": slug.current to _id
+      },
+
+      // Project fields
+      name,
+      date,
+
+      // Education fields
+      institution,
+      course,
+      start,
+      end,
+
+      // Common fields
+      summary,
+      details,
+    }
+  `;
+
+    const result = await client.fetch<
+        {
+            _id: string;
+            _type: 'experience' | 'project' | 'education';
+            role?: string;
+            is_contract?: boolean;
+            start?: string;
+            end?: string;
+            company?: {
+                name: string;
+                logo: any;
+                link: string;
+                sector: string;
+                _id: string; // Changed from slug to _id
+            };
+            name?: string;
+            date?: string;
+            institution?: string;
+            course?: string;
+            summary: any;
+            details: any;
+        }[]
+    >(query);
+
+    return result.map((item) => {
+        const timelineItem: TimelineItem = {
+            _id: item._id,
+            startDate: item._type === 'experience' ? item.start || null : item._type === 'project' ? item.date || null : item.start || null,
+            endDate: item._type === 'experience' || item._type === 'education' ? item.end || null : null,
+            type: item._type.charAt(0).toUpperCase() + item._type.slice(1) as 'Experience' | 'Project' | 'Education',
+            summary: item.summary,
+            details: item.details,
+        };
+
+        if (item._type === 'experience') {
+            timelineItem.role = item.role;
+            timelineItem.company = item.company;
+            timelineItem.company._id = item.company?._id; // Changed from slug to _id
+            timelineItem.is_contract = item.is_contract;
+        } else if (item._type === 'project') {
+            timelineItem.projectTitle = item.name;
+        } else if (item._type === 'education') {
+            timelineItem.institution = item.institution;
+            timelineItem.course = item.course;
         }
-    `);
-}
-
-export async function getExperiences() {
-    return client.fetch(groq`
-        *[_type == "experience"] | order(start desc) {
-            _id,
-            role,
-            is_contract,
-            start,
-            end,
-            details,
-            company->{
-                name,
-                logo,
-                link,
-                sector
-            }
-        }
-    `);
-}
-
-export async function getEducation() {
-    return client.fetch(groq`*[_type == "education"] | order(start desc)`);
-}
-
-export async function getAbout() {
-    return client.fetch(groq`*[_type == "about"]`);
-}
-
-export async function getContact() {
-    return client.fetch(groq`*[_type == "contact"]`);
-}
-
-export async function getSkills() {
-    return client.fetch(groq`
-        *[_type == "skill"] {
-            _id,
-            name,
-            details,
-            evidence[] {
-                point,
-                role-> {
-                    _id,
-                    role,
-                    start,
-                    end,
-                    slug
-                }
-            }
-        }
-    `);
-}
-
-export async function getAwards() {
-    return client.fetch(groq`
-        *[_type == "award"] {
-            _id,
-            name,
-            details,
-            role-> {
-                role
-            }
-        }
-    `);
-}
-
-export async function getPassions() {
-    return client.fetch(groq`
-        *[_type == "passion"] {
-            _id,
-            name,
-            details
-        }
-    `);
+        console.log("timelineItem", timelineItem)
+        return timelineItem;
+    });
 }
