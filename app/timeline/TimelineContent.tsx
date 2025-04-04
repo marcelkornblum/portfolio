@@ -252,12 +252,12 @@ export default function TimelineContent({ timeline: initialTimeline, selectedIte
                                 <h3 className="timeline-item-title">
                                     {item.type === 'Experience' ? (
                                         <Link href={`/company/${item.company?._id}`}>
-                                            {`${item.role} @ ${item.company?.name}`}
+                                            {`${item.role}, ${item.company?.name}`}
                                         </Link>
                                     ) : item.type === 'Project' ? (
                                         item.projectTitle
                                     ) : item.type === 'Education' ? (
-                                        item.course ? `${item.course} @ ${item.institution}` : `${item.institution}`
+                                        item.course ? `${item.course}, ${item.institution}` : `${item.institution}`
                                     ) : null}
                                 </h3>
                                 <div className="timeline-item-tags">
