@@ -110,7 +110,9 @@ export async function getTimeline(): Promise<TimelineItem[]> {
         if (item._type === 'experience') {
             timelineItem.role = item.role;
             timelineItem.company = item.company;
-            timelineItem.company._id = item.company?._id;
+            if (timelineItem.company) {
+                timelineItem.company._id = item.company?._id ?? '';
+            }
             timelineItem.is_contract = item.is_contract;
         } else if (item._type === 'project') {
             timelineItem.projectTitle = item.name;
@@ -118,9 +120,118 @@ export async function getTimeline(): Promise<TimelineItem[]> {
             timelineItem.institution = item.institution;
             timelineItem.course = item.course;
         }
-        console.log("timelineItem", timelineItem)
+        console.log("timelineItem", timelineItem);
         return timelineItem;
     });
 }
 
-// ... rest of your functions ...
+export interface About {
+    _id: string;
+    title: string;
+    details: any;
+}
+
+
+export async function getAbout(): Promise<About> {
+    const query = groq`
+        *[_type == "about"][0] {
+            _id,
+            title,
+            details,
+        }
+    `;
+    const result = await client.fetch<About>(query);
+    return result;
+}
+
+export interface Contact {
+    _id: string;
+    title: string;
+    details: any;
+}
+
+export async function getContact(): Promise<Contact> {
+    const query = groq`
+        *[_type == "contact"][0] {
+            _id,
+            title,
+            details,
+        }
+    `;
+    const result = await client.fetch<Contact>(query);
+    return result;
+}
+
+export interface Skill {
+    _id: string;
+    name: string;
+    details: any;
+}
+
+export async function getSkills(): Promise<Skill[]> {
+    const query = groq`
+        *[_type == "skill"] {
+            _id,
+            name,
+            details,
+        }
+    `;
+    const result = await client.fetch<Skill[]>(query);
+    return result;
+}
+
+export interface Award {
+    _id: string;
+    name: string;
+    details: any;
+}
+
+export async function getAwards(): Promise<Award[]> {
+    const query = groq`
+        *[_type == "award"] {
+            _id,
+            name,
+            details,
+        }
+    `;
+    const result = await client.fetch<Award[]>(query);
+    return result;
+}
+
+export interface Interest {
+    _id: string;
+    name: string;
+    details: any;
+}
+
+export async function getInterests(): Promise<Interest[]> {
+    const query = groq`
+        *[_type == "interest"] {
+            _id,
+            name,
+            details,
+        }
+    `;
+    const result = await client.fetch<Interest[]>(query);
+    return result;
+}
+
+export interface Project {
+    _id: string;
+    title: string;
+    details: any;
+    // ... other fields
+}
+
+export async function getProjects(): Promise<Project[]> {
+    const query = groq`
+        *[_type == "project"] {
+            _id,
+            title,
+            details,
+            // Add other fields as needed from your schema
+        }
+    `;
+    const result = await client.fetch<Project[]>(query);
+    return result;
+}

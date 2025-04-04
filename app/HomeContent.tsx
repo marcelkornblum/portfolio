@@ -2,8 +2,8 @@
 
 import { About, Contact } from '@/lib/sanity';
 import { PortableText } from '@portabletext/react';
+import Image from 'next/image'; // Import Image component
 
-// This is now a Client Component
 export default function HomeContent({ about, contact }: { about: About; contact: Contact }) {
     return (
         <>

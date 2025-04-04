@@ -1,23 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import Navbar from './components/Navbar';
-import localFont from 'next/font/local';
-
-const geistSans = localFont({
-    src: [
-        {
-            path: '../public/fonts/Geist-Regular.ttf',
-            weight: '400',
-            style: 'normal',
-        },
-        {
-            path: '../public/fonts/Geist-Bold.ttf',
-            weight: '700',
-            style: 'normal',
-        },
-    ],
-    variable: '--font-geist-sans',
-});
 
 export const metadata: Metadata = {
     title: 'Marcel Kornblum',
