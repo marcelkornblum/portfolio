@@ -1,8 +1,6 @@
-import { getTimeline, TimelineItem } from '@/lib/sanity';
-import TimelineContent from './TimelineContent';
+import { getTimeline } from '@/lib/sanity';
 import TimelineWithState from './TimelineWithState';
 
-// This is now a server component
 export default async function Timeline() {
     const timeline = await getTimeline();
     return (

@@ -1,0 +1,43 @@
+sidebar-l {
+  max-inline-size: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+}
+
+sidebar-l > :first-child {
+  flex-basis: 30%;
+  flex-grow: 1;
+}
+
+sidebar-l > :last-child {
+  flex-basis: 0;
+  flex-grow: 999;
+  min-inline-size: 400px;
+}
+
+stack-l {
+  max-inline-size: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+stack-l:only-child {
+  block-size: 100%;
+}
+
+stack-l > * + * {
+  margin-block-start: var(--s1);
+}
+
+switcher-l {
+  max-inline-size: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+switcher-l > * {
+  flex-basis: calc((var(--measure) - 100%) * 999);
+  flex-grow: 1;
+}

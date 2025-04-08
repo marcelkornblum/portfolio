@@ -1,0 +1,33 @@
+
+
+.timeline-item {
+    cursor: pointer;
+
+    /*Date item */
+    > :first-child {
+        text-align: right;
+        line-height: calc(1.1 * var(--s2) + 12px);
+        color: var(--secondary-color);
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+
+        /* touchscreens */
+        @media (hover: none) {
+            opacity: 1;
+        }
+    }
+}
+
+.timeline-item:hover > :first-child {
+    opacity: 1;
+}
+
+.timeline-item.selected {
+    background-color: black;
+    color: white;
+
+    * {
+        color: white;
+        opacity: 1;
+    }
+}

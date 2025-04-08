@@ -1,15 +1,56 @@
-/* ... your existing styles ... */
+
+:root {
+/* Color Palette */
+    --primary-color: #111;
+    --secondary-color: #666;
+    --accent-color: #ff0000;
+
+/* Sizing */
+    --ratio: 1.618;
+    --s-5: calc(var(--s-4) / var(--ratio));
+    --s-4: calc(var(--s-3) / var(--ratio));
+    --s-3: calc(var(--s-2) / var(--ratio));
+    --s-2: calc(var(--s-1) / var(--ratio));
+    --s-1: calc(var(--s0) / var(--ratio));
+    --s0: 1rem;
+    --s1: calc(var(--s0) * var(--ratio));
+    --s2: calc(var(--s1) * var(--ratio));
+    --s3: calc(var(--s2) * var(--ratio));
+    --s4: calc(var(--s3) * var(--ratio));
+    --s5: calc(var(--s4) * var(--ratio));
+/* Typography */
+    font-size: calc(0.75rem + 0.25vw);
+    --measure: 60ch;
+    --text-color: var(--primary-color);
+    --heading-color: var(--primary-color);
+}
+
 
 /* Typography */
-body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Classic Swiss font */
-    line-height: 1.5; /* Slightly tighter line height */
-    color: #333; /* Dark gray text */
-    -webkit-font-smoothing: antialiased; /* Improve font rendering */
+* {
+    font-family: 'Poppins', Helvetica, sans-serif;
+    color: var(--text-color);
+    max-inline-size: var(--measure);
+}
+
+html,
+body,
+div,
+header,
+nav,
+main,
+footer {
+    max-inline-size: none;
+}
+
+/* body {
+    line-height: 1.5;
+    color: var(var(--primary-color));
+    -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
-    background-color: #fff; /* White background */
-}
+    background-color: #fff;
+}*/
 
 h1,
 h2,
@@ -17,58 +58,70 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Consistent with body */
-    font-weight: bold;
-    color: #111; /* Very dark gray for headings */
-    line-height: 1.2;
+    color: var(--heading-color);
+    line-height: 1.1;
 }
 
-/* Color Palette */
-:root {
-    --primary-color: #111; /* Black */
-    --secondary-color: #0077cc; /* Blue */
-    --accent-color: #ff0000; /* Red */
-    --light-gray: #f0f0f0;
-    --medium-gray: #ccc;
-    --dark-gray: #666;
-    --text-color: #333;
-    --heading-color: #111;
-    --creamy-top: #f8f5f0; /* Creamy off-white */
-    --creamy-bottom: #efe8dc; /* Slightly darker creamy off-white */
+h1 {
+    font-size: var(--s3);
 }
+
+h2 {
+    font-size: var(--s2);
+}
+
+h3 {
+    font-size: var(--s1);
+}
+
 
 /* Links */
 a {
-    color: var(--text-color); /* Match text color */
-    text-decoration: none; /* Remove underline */
-    transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out; /* Smooth transition */
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
 }
 
 a:hover,
 a:focus {
-    text-decoration: underline; /* Add underline on hover/focus */
+    text-decoration: underline;
+}
+
+
+/* Utilities */
+
+.color\:primary {
+  color: var(--primary-color);
+}
+
+.color\:secondary {
+  color: var(--secondary-color);
+}
+
+.color\:accent {
+  color: var(--accent-color);
 }
 
 
 /* Gradient Background */
-.gradient-background {
+/* .gradient-background {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; /* Place behind content */
-    pointer-events: none; /* Prevent gradient from interfering with clicks */
+    z-index: -1;
+    pointer-events: none;
     background: linear-gradient(to bottom, var(--creamy-top) 0%, var(--creamy-top) 5%, #fff 15%, #fff 60%, var(--creamy-bottom) 90%, var(--creamy-bottom) 100%);
-}
-
+} */
+/*
 .timeline {
-    padding: 6rem 2rem; /* Increased top padding */
+    padding: 6rem 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    background: transparent; /* Solid light gray background */
+    background: transparent;
 }
 
 .timeline-container {
@@ -78,80 +131,79 @@ a:focus {
 
 .timeline-fixed-date {
     position: fixed;
-    top: 10%; /* Move lower */
-    right: 32px; /* Position on the right */
+    top: 10%;
+    right: 32px;
     color: var(--primary-color);
     font-size: 0.8rem;
     z-index: 10;
-    text-align: right; /* Right-align text */
-    white-space: nowrap; /* Prevent text wrapping */
-    display: flex; /* Use flexbox */
-    align-items: center; /* Vertically center */
-    gap: 1rem; /* Add space between text and line */
-    justify-content: flex-end; /* Align items to the end */
+    text-align: right;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: flex-end;
 }
 
-/* Line Element */
 .timeline-fixed-date::after {
     content: '';
-    flex-grow: 1; /* Make the line grow */
-    height: 1px; /* Thinner line */
-    background-color: var(--primary-color); /* Black line */
-    border-radius: 0; /* No rounded corners */
-    min-width: 50px; /* Minimum line length */
-    max-width: 100px; /* Maximum line length */
+    flex-grow: 1;
+    height: 1px;
+    background-color: var(--primary-color);
+    border-radius: 0;
+    min-width: 50px;
+    max-width: 100px;
 }
 
 .timeline-items {
     display: flex;
     flex-direction: column;
-    /* padding-top: 4rem; */
-    position: relative; /* For the vertical line */
-    padding-left: 150px; /* Add padding to the left */
-}
+    position: relative;
+    padding-left: 150px;
+} */
 
+/*
 .timeline-item {
     display: flex;
     gap: 1rem;
     cursor: pointer;
-    background-color: transparent; /* Transparent background */
-    transition: background-color 0.2s ease-in-out; /* Hover effect */
-    width: 80%; /* Limit the width of the items */
-    margin-left: auto; /* Push the items to the right */
+    background-color: transparent;
+    transition: background-color 0.2s ease-in-out;
+    width: 80%;
+    margin-left: auto;
     margin-bottom: 3rem;
-    position: relative; /* For the date on hover */
-    align-items: baseline; /* Align items to the baseline */
+    position: relative;
+    align-items: baseline;
 }
 
 .timeline-item.in-view {
-    background-color: transparent; /* Light gray background when in view */
+    background-color: transparent;
 }
 
 .timeline-item:hover {
-    transform: translateY(0); /* Less pronounced lift */
-    background-color: transparent; /* Light gray background on hover */
+    transform: translateY(0);
+    background-color: transparent;
 }
 
 .timeline-item-date {
-    font-weight: normal; /* Less bold */
+    font-weight: normal;
     min-width: 100px;
     text-align: right;
-    color: var(--dark-gray); /* Darker text */
-    font-size: 0.8rem; /* Smaller */
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Sans-serif font for dates */
-    opacity: 0; /* Hide by default */
+    color: var(--dark-gray);
+    font-size: 0.8rem;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    opacity: 0;
     position: absolute;
-    left: -150px; /* Position the date to the left */
-    pointer-events: none; /* Prevent the date from being clickable */
-    display: block; /* Ensure it's a block element */
-    width: auto; /* Allow the date to take up space */
-    overflow: visible; /* Show the date */
-    transition: opacity 0.2s ease-in-out; /* Add a transition */
+    left: -150px;
+    pointer-events: none;
+    display: block;
+    width: auto;
+    overflow: visible;
+    transition: opacity 0.2s ease-in-out;
     margin: 0.5em 0;
 }
 
 .timeline-item:hover .timeline-item-date {
-    opacity: 1; /* Show the date on hover */
+    opacity: 1;
 }
 
 .timeline-item-content {
@@ -160,9 +212,9 @@ a:focus {
 
 .timeline-item-title {
     margin: 0.2rem 0 0.5rem 0;
-    font-size: 1.2rem; /* Larger title */
-    color: var(--heading-color); /* Very dark gray */
-    line-height: 1.2; /* Tighter line height */
+    font-size: 1.2rem;
+    color: var(--heading-color);
+    line-height: 1.2;
     border-bottom: 1px solid var(--primary-color);
 }
 
@@ -173,48 +225,49 @@ a:focus {
 }
 
 .timeline-item-tag {
-    background-color: transparent; /* Transparent background */
+    background-color: transparent;
     padding: 0 0.2rem;
     border-radius: .2rem;
     text-transform: lowercase;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 0.8rem; /* Slightly larger */
-    color: var(--dark-gray); /* Darker tag text */
+    font-size: 0.8rem;
+    color: var(--dark-gray);
     font-weight: normal;
-    border: 1px solid var(--medium-gray); /* Add a border */
+    border: 1px solid var(--medium-gray);
 }
 
 .timeline-item-summary {
-    font-size: 0.9rem; /* Slightly larger */
-    color: var(--text-color); /* Dark gray */
-    line-height: 1.5; /* Improved line height */
-}
+    font-size: 0.9rem;
+    color: var(--text-color);
+    line-height: 1.5;
+} */
 
-/* Detail Pane Styles */.detail-pane {
+/* Detail Pane Styles */
+/* .detail-pane {
     position: fixed;
     top: 0;
-    /* right: -400px; Start off-screen to the right */
+    / right: -400px; *
     margin-left: 2rem;
     width: 700px;
     height: 100vh;
     background-color: #fff;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
     z-index: 20;
-    transform: translateX(100%); /* Initially hidden */
-    transition: transform 0.3s ease-in-out; /* Smooth transition */
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Allow scrolling if content is too large */
+    overflow-y: auto;
 }
 
 .detail-pane.open {
-    transform: translateX(0); /* Slide in from the right */
+    transform: translateX(0);
 }
 
 .detail-pane-close {
     position: absolute;
     top: 1rem;
-    right: 1rem; /* Moved to the right */
+    right: 1rem;
     background: none;
     border: none;
     cursor: pointer;
@@ -236,24 +289,24 @@ a:focus {
     display: flex;
     gap: 1rem;
     align-items: center;
-    font-size: 1.6rem; /* Larger title */
-    color: var(--heading-color); /* Very dark gray */
+    font-size: 1.6rem;
+    color: var(--heading-color);
 }
 
 .detail-pane-date {
     margin-bottom: 1rem;
-    color: var(--dark-gray); /* Darker date */
+    color: var(--dark-gray);
     font-weight: 500;
 }
 
 .detail-pane-details {
-    font-size: 1rem; /* Slightly larger */
-    color: var(--text-color); /* Dark gray */
-    line-height: 1.5; /* Improved line height */
-}
+    font-size: 1rem;
+    color: var(--text-color);
+    line-height: 1.5;
+} */
 
 /* Timeline Filters */
-.timeline-filters {
+/* .timeline-filters {
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
@@ -269,7 +322,7 @@ a:focus {
     color: var(--dark-gray);
     border: 1px solid var(--medium-gray);
     padding: 0.5rem 1rem;
-    border-radius: 0; /* No rounded corners */
+    border-radius: 0;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
@@ -281,4 +334,4 @@ a:focus {
 
 .timeline-filter-group button:hover {
     background-color: var(--medium-gray);
-}
+} */
