@@ -4,6 +4,8 @@ import './layouts.css';
 import './main.css';
 import type { Metadata } from 'next';
 import Navbar from './components/Navbar';
+import { ThemeProvider } from './components/ThemeProvider';
+import { ThemeToggle } from './components/ThemeToggle';
 
 export const metadata: Metadata = {
     title: 'Marcel Kornblum',
@@ -16,18 +18,22 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning>
             <head>
-                <script src="/sidebar.js" defer></script>
-                <script src="/stack.js" defer></script>
-                <script src="/switcher.js" defer></script>
                 <link rel="stylesheet"
                     href="https://fonts.googleapis.com/css?family=Poppins" />
             </head>
             <body>
-                {/* <div className='gradient-background' /> */}
-                {/* <Navbar /> */}
-                {children}
+                <ThemeProvider
+                    attribute="data-theme" // Use data-theme attribute
+                    defaultTheme="dark"    // Default to dark
+                    enableSystem={false}   // Disable system theme detection if desired
+                >
+                    {/* <div className='gradient-background' /> */}
+                    {/* <Navbar /> */}
+                    {children}
+                    <ThemeToggle />
+                </ThemeProvider>
             </body>
         </html>
     );

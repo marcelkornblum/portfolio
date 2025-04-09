@@ -2,7 +2,7 @@
 
 import { TimelineItem } from '@/lib/sanity';
 import { format, parseISO } from 'date-fns';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
@@ -11,38 +11,86 @@ import TimelineContentItem from './TimelineContentItem';
 
 
 
-export default function TimelineContent({ timeline: initialTimeline, selectedItem, filters, handleItemClick, handleClosePane, handleFilterChange }: { timeline: TimelineItem[]; selectedItem: TimelineItem | null; filters: { type: string[]; employment: string[] }; handleItemClick: (item: TimelineItem) => void; handleClosePane: () => void; handleFilterChange: (filterType: string, value: string) => void }) {
+export default function TimelineContent({
+    timeline: initialTimeline,
+    selectedItem,
+    filters,
+    handleItemClick,
+    handleClosePane,
+    handleFilterChange
+}: {
+    timeline: TimelineItem[];
+    selectedItem: TimelineItem | null;
+    filters: {
+        type: string[];
+        employment: string[]
+    };
+    handleItemClick: (item: TimelineItem) => void;
+    handleClosePane: () => void;
+    handleFilterChange: (filterType: string, value: string) => void
+}) {
     const [currentDate, setCurrentDate] = useState<string | null>(null);
-    const timelineRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-    const itemRefs = useRef<{ [key: string]: { current: HTMLDivElement | null } }>({}); // Correct ref type
+    const timelineRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
+    const [currentSectionItem, setcurrentSectionItem] = useState<TimelineItem | null>(null);
 
     const observer = useRef<IntersectionObserver | null>(null);
     const fixedDateRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const updateFixedDate = () => {
-            const fixedDateRect = fixedDateRef.current?.getBoundingClientRect();
-            if (!fixedDateRect) return;
+    const filteredTimeline = initialTimeline.filter((item) => {
+        const typeMatch = filters.type.length === 0 || filters.type.includes(item.type.toLowerCase());
+        const employmentMatch = filters.employment.length === 0 || (item.type === 'Experience' && filters.employment.includes(item.is_contract ? 'contract' : 'permanent'));
+        return typeMatch && employmentMatch;
+    });
 
-            let closestItem: TimelineItem | null = null;
-            let closestDistance = Infinity;
 
-            timelineRefs.current.forEach((ref, id) => {
-                if (ref) {
-                    const itemRect = ref.getBoundingClientRect();
-                    const distance = Math.abs(itemRect.top - fixedDateRect.top);
+    const updateFixedDate = useCallback(() => {
+        const fixedDateRect = fixedDateRef.current?.getBoundingClientRect();
+        if (!fixedDateRect || filteredTimeline.length === 0) {
+            setCurrentDate(null);
+            return;
+        }
 
-                    if (distance < closestDistance) {
-                        closestDistance = distance;
-                        closestItem = initialTimeline.find((item) => item._id === id) || null;
-                    }
+        let closestDistance = Infinity;
+
+        // Find the first item whose top is at or below the fixed date line
+        for (const item of filteredTimeline) {
+            const ref = timelineRefs.current.get(item._id);
+            if (ref) {
+                const itemRect = ref.getBoundingClientRect();
+                const distance = Math.abs(itemRect.top - fixedDateRect.top);
+
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    setcurrentSectionItem(item);
                 }
-            });
-
-            if (closestItem && closestItem["startDate"]) {
-                setCurrentDate(format(parseISO(closestItem["startDate"]), 'MMMM, yyyy'));
             }
-        };
+        }
+
+        // If no item found below (scrolled past all items), use the last ite
+        if (!currentSectionItem && filteredTimeline.length > 0) {
+            for (let i = filteredTimeline.length - 1; i >= 0; i--) {
+                const item = filteredTimeline[i];
+                if (timelineRefs.current.has(item._id) && timelineRefs.current.get(item._id)) {
+                    setcurrentSectionItem(item);
+                    break;
+                }
+            }
+        }
+
+        if (currentSectionItem && currentSectionItem.startDate) {
+            try {
+                setCurrentDate(format(parseISO(currentSectionItem.startDate), 'MMMM, yyyy'));
+            } catch (e) {
+                console.error("Error formatting date:", e);
+                setCurrentDate("Invalid Date");
+            }
+        } else {
+            setCurrentDate(null);
+        }
+    }, [filteredTimeline]);
+
+    useEffect(() => {
+        const map = timelineRefs.current;
 
         const handleIntersection: IntersectionObserverCallback = (entries) => {
             entries.forEach((entry) => {
@@ -56,28 +104,41 @@ export default function TimelineContent({ timeline: initialTimeline, selectedIte
             requestAnimationFrame(updateFixedDate);
         };
 
+        if (observer.current) {
+            observer.current.disconnect();
+        }
+
         observer.current = new IntersectionObserver(handleIntersection, {
-            threshold: 0.1, // Adjust the threshold
+            rootMargin: '0px 0px -50% 0px',
+            threshold: 0,
         });
 
-        timelineRefs.current.forEach((ref, id) => {
-            if (ref) {
-                observer.current?.observe(ref);
+        filteredTimeline.forEach(item => {
+            const node = map.get(item._id);
+            if (node) {
+                observer.current?.observe(node);
             }
         });
 
         requestAnimationFrame(updateFixedDate);
 
+        // Cleanup function
         return () => {
-            observer.current?.disconnect();
+            if (observer.current) {
+                observer.current.disconnect();
+            }
         };
-    }, [initialTimeline]);
+    }, [initialTimeline, filteredTimeline, updateFixedDate]);
 
-    const filteredTimeline = initialTimeline.filter((item) => {
-        const typeMatch = filters.type.length === 0 || filters.type.includes(item.type.toLowerCase());
-        const employmentMatch = filters.employment.length === 0 || (item.type === 'Experience' && filters.employment.includes(item.is_contract ? 'contract' : 'permanent'));
-        return typeMatch && employmentMatch;
-    });
+
+    const setTimelineRef = useCallback((node: HTMLDivElement | null, id: string) => {
+        const map = timelineRefs.current;
+        if (node) {
+            map.set(id, node);
+        } else {
+            map.delete(id);
+        }
+    }, []);
 
     return (
         <div >
@@ -100,10 +161,12 @@ export default function TimelineContent({ timeline: initialTimeline, selectedIte
                     // console.log("item", item)
                     return (
                         <TimelineContentItem
+                            key={item._id}
                             item={item}
-                            ref={itemRefs.current[item._id] = { current: null }}
+                            ref={(node) => setTimelineRef(node, item._id)}
                             handleItemClick={handleItemClick}
-                            selected={selectedItem && selectedItem._id === item._id}
+                            selected={selectedItem ? selectedItem._id === item._id : false}
+                            current={currentSectionItem ? currentSectionItem._id === item._id : false}
                         />
                     )
                 })}

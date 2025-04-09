@@ -5,12 +5,16 @@ import TimelineContent from './TimelineContent';
 import { useState } from 'react';
 
 export default function TimelineWithState({ timeline: initialTimeline }: { timeline: TimelineItem[] }) {
-    const [selectedItem, setSelectedItem] = useState<TimelineItem | null>(null); // State for selected item
+    const [selectedItem, setSelectedItem] = useState<TimelineItem | null>(null);
     const [filters, setFilters] = useState<{ type: string[]; employment: string[] }>({ type: [], employment: [] }); // State for filters
 
     const handleItemClick = (item: TimelineItem) => {
-        setSelectedItem(item); // Set the selected item
-    };
+        if (item == selectedItem) {
+            setSelectedItem(null);
+        } else {
+            setSelectedItem(item);
+        };
+    }
 
     const handleClosePane = () => {
         setSelectedItem(null); // Clear the selected item

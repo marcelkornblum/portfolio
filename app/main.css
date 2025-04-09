@@ -1,33 +1,177 @@
 
-
-.timeline-item {
+/*
+ * GLOBAL ELEMENTS
+ */
+.theme-toggle-button {
+    position: fixed;
+    bottom: 1.25rem; /* 20px */
+    left: 1.25rem;  /* 20px */
+    z-index: 50;
+    padding: 0.75rem; /* 12px */
+    border-radius: 9999px; /* full */
+    border: none;
     cursor: pointer;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    display: flex; /* Needed for icon alignment if not already handled */
+    align-items: center;
+    justify-content: center;
 
-    /*Date item */
-    > :first-child {
+    &:hover {
+        background-color: var(--button-hover-bg);
+        color: var(--button-hover-text);
+    }
+
+    svg {
+        width: 1.25rem; /* 20px */
+        height: 1.25rem; /* 20px */
+    }
+}
+
+
+
+/*
+ * TIMELINE
+ */
+.timeline {
+    .timeline-fixed-date {
+        position: fixed;
+        top: 10%;
+        left: 0;
+        width: 30%;
+        color: var(--primary-color);
+        /* background-color: var(--background-color); */
+        font-size: var(--s1);
+        z-index: 10;
         text-align: right;
-        line-height: calc(1.1 * var(--s2) + 12px);
-        color: var(--secondary-color);
-        opacity: 0;
-        transition: opacity 0.2s ease-in-out;
+        white-space: nowrap;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
 
-        /* touchscreens */
-        @media (hover: none) {
+        &::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background-color: var(--primary-color);
+            border-radius: 0;
+            width: 100%;
+        }
+    }
+
+    sidebar-l {
+        cursor: pointer;
+
+        .date {
+            text-align: right;
+            margin-block-start: .3em;
+            line-height: 1.2;
+            color: var(--secondary-color);
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+
+            &.current {
+                opacity: 1;
+            }
+        }
+
+        .primaryTitle {
+            color: var(--accent-color);
+        }
+
+        .tag {
+            color: var(--secondary-color);
+            font-size: var(--s0);
+        }
+
+        .summary {
+            color: var(--primary-color);
+        }
+
+        &:hover .date {
             opacity: 1;
+        }
+
+        &.selected {
+            background-color: var(--background-color-inverse);
+            color: var(--primary-color-inverse);
+
+            * {
+                color: var(--primary-color-inverse);
+                opacity: 1;
+            }
+
+            .primaryTitle {
+                color: var(--accent-color-inverse);
+            }
+
+            .date, .tag {
+                color: var(--secondary-color-inverse);
+            }
         }
     }
 }
 
-.timeline-item:hover > :first-child {
-    opacity: 1;
+
+.detail-pane {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* margin-left: 2rem; */
+    width: 40vw;
+    height: 100vh;
+    background-color: var(--background-color);
+    /* box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); */
+    z-index: 20;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 }
 
-.timeline-item.selected {
-    background-color: black;
-    color: white;
-
-    * {
-        color: white;
-        opacity: 1;
-    }
+.detail-pane.open {
+    transform: translateX(0);
 }
+
+.detail-pane-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--dark-gray);
+    transition: color 0.2s ease-in-out;
+}
+
+.detail-pane-close:hover {
+    color: var(--accent-color);
+}
+/*
+.detail-pane-content {
+    padding: 2rem;
+} */
+
+/* .detail-pane-title {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    font-size: 1.6rem;
+    color: var(--heading-color);
+}
+
+.detail-pane-date {
+    margin-bottom: 1rem;
+    color: var(--dark-gray);
+    font-weight: 500;
+}
+
+.detail-pane-details {
+    font-size: 1rem;
+    color: var(--text-color);
+    line-height: 1.5;
+} */

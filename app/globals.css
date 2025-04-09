@@ -1,9 +1,22 @@
 
 :root {
 /* Color Palette */
-    --primary-color: #111;
-    --secondary-color: #666;
-    --accent-color: #ff0000;
+/* Solarized colours */
+    --base03: #002b36;
+    --base02: #073642;
+    --base01: #586e75;
+    --base00: #657b83;
+    --base0: #839496;
+    --base1: #93a1a1;
+    --base2: #eee8d5;
+    --base3: #fdf6e3;
+    --yellow: #b58900;
+    --orange: #cb4b16;
+    --red: #dc322f;
+    --magenta: #d33682;
+    --violet: #6c71c4;
+    --cyan: #2aa198;
+    --green: #859900;
 
 /* Sizing */
     --ratio: 1.618;
@@ -18,11 +31,46 @@
     --s3: calc(var(--s2) * var(--ratio));
     --s4: calc(var(--s3) * var(--ratio));
     --s5: calc(var(--s4) * var(--ratio));
+
+/* --- Dark Theme (Solarized Dark) --- */
+    --primary-color-dark: var(--base3);
+    --secondary-color-dark: var(--base0);
+    --accent-color-dark: var(--cyan);
+    --background-color-dark: var(--base03);
+
+/* --- Light Theme (Solarized Dark) --- */
+    --primary-color-light: var(--base03);
+    --secondary-color-light: var(--base00);
+    --accent-color-light: var(--cyan);
+    --background-color-light: var(--base3);
+
+/* --- Apply Dark Theme --- */
+    --primary-color: var(--primary-color-dark);
+    --secondary-color: var(--secondary-color-dark);
+    --accent-color: var(--accent-color-dark);
+    --background-color: var(--background-color-dark);
+    --primary-color-inverse: var(--primary-color-light);
+    --secondary-color-inverse: var(--secondary-color-light);
+    --accent-color-inverse: var(--accent-color-light);
+    --background-color-inverse: var(--background-color-light);
+
 /* Typography */
     font-size: calc(0.75rem + 0.25vw);
     --measure: 60ch;
     --text-color: var(--primary-color);
     --heading-color: var(--primary-color);
+}
+
+/* --- Apply Light Theme --- */
+html[data-theme='light'] {
+    --primary-color: var(--primary-color-light);
+    --secondary-color: var(--secondary-color-light);
+    --accent-color: var(--accent-color-light);
+    --background-color: var(--background-color-light);
+    --primary-color-inverse: var(--primary-color-dark);
+    --secondary-color-inverse: var(--secondary-color-dark);
+    --accent-color-inverse: var(--accent-color-dark);
+    --background-color-inverse: var(--background-color-dark);
 }
 
 
@@ -43,14 +91,13 @@ footer {
     max-inline-size: none;
 }
 
-/* body {
-    line-height: 1.5;
-    color: var(var(--primary-color));
+body {
+    color: var(--primary-color);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
-    background-color: #fff;
-}*/
+    background-color: var(--background-color);
+}
 
 h1,
 h2,
