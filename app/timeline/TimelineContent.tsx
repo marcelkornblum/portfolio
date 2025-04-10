@@ -44,7 +44,7 @@ export default function TimelineContent({
 
 
     const updateFixedDate = useCallback(() => {
-        if (selectedItem) {
+        if (selectedItem && selectedItem.startDate) {
             setCurrentDate(format(parseISO(selectedItem.startDate), 'MMMM, yyyy'));
             return;
         }
