@@ -8,6 +8,72 @@ import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 
 import TimelineContentItem from './TimelineContentItem';
+import { TimelineFixedDate } from './TimelineFixedDate.component';
+import { Stack } from '../components/layout/stack';
+import { Imposter } from '../components/layout/imposter';
+
+import styled, { css } from 'styled-components'
+
+const StyledDetailPaneWrapper = styled(Imposter)`
+  background-color: var(--background-color);
+  min-width: 100vw;
+  height: 100vh;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    visibility 0s,
+    opacity 0.2s ease-in-out;
+
+  &.selected {
+    visibility: visible;
+    opacity: 1;
+
+    imposter-l {
+      transform: translate(0, 0);
+      transition: 0.2s transform 0.3s ease-in-out;
+    }
+  }
+`;
+
+const StyledDetailPane = styled(Imposter)`
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 30%;
+    transform: none;
+    min-width: calc(70% - 1rem);
+    height: 100%;
+    overflow-y: auto;
+    margin-inline-start: 1rem;
+    padding: 10vh 2rem 2rem 2rem;
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    border-left: 1.5px solid var(--primary-color);
+    transform: translate(100%, 0);
+
+    h2 {
+      margin-block-end: 2rem;
+    }
+
+    .detail-pane-close {
+        position: absolute;
+        top: 1rem;
+        left: 2rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: var(--dark-gray);
+        transition: color 0.2s ease-in-out;
+
+        &:hover {
+            color: var(--accent-color);
+        }
+    }
+`
 
 
 
@@ -147,9 +213,9 @@ export default function TimelineContent({
     return (
         <>
             <main className="timeline">
-                <div className="timeline-fixed-date" ref={fixedDateRef}>
+                <TimelineFixedDate ref={fixedDateRef}>
                     {currentDate}
-                </div>
+                </TimelineFixedDate>
                 <div className="timeline-filters">
                     <div className="timeline-filter-group">
                         <button className={filters.type.includes('experience') ? 'active' : ''} onClick={() => handleFilterChange('type', 'experience')}>Experience</button>
@@ -161,7 +227,7 @@ export default function TimelineContent({
                         <button className={filters.employment.includes('permanent') ? 'active' : ''} onClick={() => handleFilterChange('employment', 'permanent')}>Permanent</button>
                     </div>
                 </div>
-                <stack-l role="list">
+                <Stack role="list">
                     {filteredTimeline.map((item) => {
                         // console.log("item", item)
                         return (
@@ -175,16 +241,21 @@ export default function TimelineContent({
                             />
                         )
                     })}
-                </stack-l>
+                </Stack>
             </main>
-            <section className='timeline'>
-                {selectedItem && <DetailPane item={selectedItem} onClose={handleClosePane} />}
-            </section>
+            <StyledDetailPaneWrapper className={`${selectedItem ? 'selected' : ''}`}>
+                {selectedItem && (
+                    <DetailPane item={selectedItem} onClose={handleClosePane} />)
+                }
+            </StyledDetailPaneWrapper>
         </>
     );
 }
 
-function DetailPane({ item, onClose }: { item: TimelineItem; onClose: () => void }) {
+function DetailPane({ item, onClose }: { item: TimelineItem | null; onClose: () => void }) {
+    if( item == null) {
+        return null;
+    }
 
     let primaryTitle = item.type === 'Experience' ? (
         item.role
@@ -200,7 +271,7 @@ function DetailPane({ item, onClose }: { item: TimelineItem; onClose: () => void
         item.institution
     ) : null
     return (
-        <imposter-l>
+        <StyledDetailPane>
             <button className="detail-pane-close" onClick={onClose}>
                 Close
             </button>
@@ -210,14 +281,10 @@ function DetailPane({ item, onClose }: { item: TimelineItem; onClose: () => void
                     <br />
                     <span className="secondaryTitle">{secondaryTitle}</span>
                 </h2>
-                {/* <p className="detail-pane-date">
-                    {item.startDate ? format(parseISO(item.startDate), 'MMMM, yyyy') : 'No Date'}
-                    {item.endDate && ` - ${format(parseISO(item.endDate), 'MMMM, yyyy')}`}
-                </p> */}
                 {item.details && (
                     <PortableText value={item.details} />
                 )}
             </div>
-        </imposter-l>
+        </StyledDetailPane>
     );
 }

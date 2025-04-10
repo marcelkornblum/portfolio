@@ -5,8 +5,47 @@ import { TimelineItem } from '@/lib/sanity';
 import { format, parseISO, intervalToDuration } from 'date-fns';
 import Link from 'next/link';
 import { PortableText } from '@portabletext/react';
+import styled, { css } from 'styled-components';
 
 import { displayDuration } from '@/lib/utils';
+
+import {Sidebar} from '../components/layout/sidebar'
+
+const StyledTimelineItem = styled(Sidebar)`
+    cursor: pointer;
+
+    .date {
+      text-align: right;
+      margin-block-start: 0.3em;
+      line-height: 1.2;
+      color: var(--secondary-color);
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+
+      /* &.current {
+                opacity: 1;
+            } */
+    }
+
+    .primaryTitle {
+      color: var(--accent-color);
+    }
+
+    .tag {
+      color: var(--secondary-color);
+      font-size: var(--s0);
+    }
+
+    .summary {
+      color: var(--primary-color);
+    }
+
+    &:hover {
+      .date {
+        opacity: 1;
+      }
+    }
+`;
 
 interface TimelineContentItemProps {
     item: TimelineItem;
@@ -64,7 +103,7 @@ const TimelineContentItem = forwardRef<HTMLDivElement, TimelineContentItemProps>
         ).filter((tag): tag is string => tag !== null && tag !== undefined);
 
         return (
-            <sidebar-l
+            <StyledTimelineItem
                 id={item._id}
                 ref={ref}
                 onClick={() => handleItemClick(item)}
@@ -93,7 +132,7 @@ const TimelineContentItem = forwardRef<HTMLDivElement, TimelineContentItemProps>
                         )}
                     </div>
                 </div>
-            </sidebar-l>
+            </StyledTimelineItem>
         )
     }
 );

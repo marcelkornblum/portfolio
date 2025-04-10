@@ -1,7 +1,5 @@
 import './reset.css';
 import './globals.css';
-import './layouts.css';
-import './main.css';
 import type { Metadata } from 'next';
 import Navbar from './components/Navbar';
 import { ThemeProvider } from './components/ThemeProvider';
@@ -29,8 +27,6 @@ export default function RootLayout({
                     defaultTheme="dark"    // Default to dark
                     enableSystem={false}   // Disable system theme detection if desired
                 >
-                    {/* <div className='gradient-background' /> */}
-                    {/* <Navbar /> */}
                     {children}
                     <ThemeToggle />
                 </ThemeProvider>
