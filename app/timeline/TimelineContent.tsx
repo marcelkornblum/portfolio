@@ -44,6 +44,10 @@ export default function TimelineContent({
 
 
     const updateFixedDate = useCallback(() => {
+        if (selectedItem) {
+            setCurrentDate(format(parseISO(selectedItem.startDate), 'MMMM, yyyy'));
+            return;
+        }
         const fixedDateRect = fixedDateRef.current?.getBoundingClientRect();
         if (!fixedDateRect || filteredTimeline.length === 0) {
             setCurrentDate(null);
@@ -141,77 +145,79 @@ export default function TimelineContent({
     }, []);
 
     return (
-        <div >
-            <div className="timeline-fixed-date" ref={fixedDateRef}>
-                {currentDate}
-            </div>
-            <div className="timeline-filters">
-                <div className="timeline-filter-group">
-                    <button className={filters.type.includes('experience') ? 'active' : ''} onClick={() => handleFilterChange('type', 'experience')}>Experience</button>
-                    <button className={filters.type.includes('project') ? 'active' : ''} onClick={() => handleFilterChange('type', 'project')}>Project</button>
-                    <button className={filters.type.includes('education') ? 'active' : ''} onClick={() => handleFilterChange('type', 'education')}>Education</button>
+        <>
+            <main className="timeline">
+                <div className="timeline-fixed-date" ref={fixedDateRef}>
+                    {currentDate}
                 </div>
-                <div className="timeline-filter-group">
-                    <button className={filters.employment.includes('contract') ? 'active' : ''} onClick={() => handleFilterChange('employment', 'contract')}>Contract</button>
-                    <button className={filters.employment.includes('permanent') ? 'active' : ''} onClick={() => handleFilterChange('employment', 'permanent')}>Permanent</button>
+                <div className="timeline-filters">
+                    <div className="timeline-filter-group">
+                        <button className={filters.type.includes('experience') ? 'active' : ''} onClick={() => handleFilterChange('type', 'experience')}>Experience</button>
+                        <button className={filters.type.includes('project') ? 'active' : ''} onClick={() => handleFilterChange('type', 'project')}>Project</button>
+                        <button className={filters.type.includes('education') ? 'active' : ''} onClick={() => handleFilterChange('type', 'education')}>Education</button>
+                    </div>
+                    <div className="timeline-filter-group">
+                        <button className={filters.employment.includes('contract') ? 'active' : ''} onClick={() => handleFilterChange('employment', 'contract')}>Contract</button>
+                        <button className={filters.employment.includes('permanent') ? 'active' : ''} onClick={() => handleFilterChange('employment', 'permanent')}>Permanent</button>
+                    </div>
                 </div>
-            </div>
-            <stack-l role="list">
-                {filteredTimeline.map((item) => {
-                    // console.log("item", item)
-                    return (
-                        <TimelineContentItem
-                            key={item._id}
-                            item={item}
-                            ref={(node) => setTimelineRef(node, item._id)}
-                            handleItemClick={handleItemClick}
-                            selected={selectedItem ? selectedItem._id === item._id : false}
-                            current={currentSectionItem ? currentSectionItem._id === item._id : false}
-                        />
-                    )
-                })}
-            </stack-l>
-            {selectedItem && <DetailPane item={selectedItem} onClose={handleClosePane} />}
-        </div >
+                <stack-l role="list">
+                    {filteredTimeline.map((item) => {
+                        // console.log("item", item)
+                        return (
+                            <TimelineContentItem
+                                key={item._id}
+                                item={item}
+                                ref={(node) => setTimelineRef(node, item._id)}
+                                handleItemClick={handleItemClick}
+                                selected={selectedItem ? selectedItem._id === item._id : false}
+                                current={currentSectionItem ? currentSectionItem._id === item._id : false}
+                            />
+                        )
+                    })}
+                </stack-l>
+            </main>
+            <section className='timeline'>
+                {selectedItem && <DetailPane item={selectedItem} onClose={handleClosePane} />}
+            </section>
+        </>
     );
 }
 
 function DetailPane({ item, onClose }: { item: TimelineItem; onClose: () => void }) {
+
+    let primaryTitle = item.type === 'Experience' ? (
+        item.role
+    ) : item.type === 'Project' ? (
+        item.projectTitle
+    ) : item.type === 'Education' ? (
+        item.course
+    ) : null
+
+    let secondaryTitle = item.type === 'Experience' ? (
+        item.company?.name
+    ) : item.type === 'Education' ? (
+        item.institution
+    ) : null
     return (
-        <div className="detail-pane">
+        <imposter-l>
             <button className="detail-pane-close" onClick={onClose}>
                 Close
             </button>
             <div className="detail-pane-content">
-                <h2 className="detail-pane-title">
-                    {item.type === 'Experience' ? (
-                        <>
-                            {item.company?.logo && (
-                                <Image
-                                    src={item.company.logo.asset.url}
-                                    alt={item.company.name}
-                                    width={50}
-                                    height={50}
-                                />
-                            )}
-                            {`${item.role} @ ${item.company?.name}`}
-                        </>
-                    ) : item.type === 'Project' ? (
-                        item.projectTitle
-                    ) : item.type === 'Education' ? (
-                        item.course ? `${item.course} @ ${item.institution}` : `${item.institution}`
-                    ) : null}
+                <h2>
+                    <span className="primaryTitle">{primaryTitle}</span>
+                    <br />
+                    <span className="secondaryTitle">{secondaryTitle}</span>
                 </h2>
-                <p className="detail-pane-date">
+                {/* <p className="detail-pane-date">
                     {item.startDate ? format(parseISO(item.startDate), 'MMMM, yyyy') : 'No Date'}
                     {item.endDate && ` - ${format(parseISO(item.endDate), 'MMMM, yyyy')}`}
-                </p>
+                </p> */}
                 {item.details && (
-                    <div className="detail-pane-details">
-                        <PortableText value={item.details} />
-                    </div>
+                    <PortableText value={item.details} />
                 )}
             </div>
-        </div>
+        </imposter-l>
     );
 }

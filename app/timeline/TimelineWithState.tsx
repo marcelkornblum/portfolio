@@ -11,13 +11,26 @@ export default function TimelineWithState({ timeline: initialTimeline }: { timel
     const handleItemClick = (item: TimelineItem) => {
         if (item == selectedItem) {
             setSelectedItem(null);
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            document.getElementsByTagName('main')[0].style.pointerEvents = 'auto';
         } else {
             setSelectedItem(item);
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${window.scrollY}px`;
+            document.getElementsByTagName('main')[0].style.pointerEvents = 'none';
         };
     }
 
     const handleClosePane = () => {
-        setSelectedItem(null); // Clear the selected item
+        setSelectedItem(null);
+        const scrollY = document.body.style.top;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        document.getElementsByTagName('main')[0].style.pointerEvents = 'auto';
     };
 
     const handleFilterChange = (filterType: string, value: string) => {
