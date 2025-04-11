@@ -21,7 +21,7 @@ export const TimelineFixed = styled.div`
   flex-direction: column;
   align-items: flex-end;
 
-  .top-nav-buttons {
+  #top-nav-buttons {
     pointer-events: auto;
     position: fixed;
     top: 1rem;

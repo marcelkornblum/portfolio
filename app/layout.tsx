@@ -1,9 +1,16 @@
 import './reset.css';
 import './globals.css';
 import type { Metadata } from 'next';
-import Navbar from './components/Navbar';
+import { Poppins } from 'next/font/google';
 import { ThemeProvider } from './components/ThemeProvider';
 import { ThemeToggle } from './components/ThemeToggle';
+
+const poppins = Poppins({
+    subsets: ['latin'],
+    display: 'swap',
+    weight: ["400"],
+    variable: '--font-poppins'
+});
 
 export const metadata: Metadata = {
     title: 'Marcel Kornblum',
@@ -16,10 +23,8 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" className={`${poppins.variable} font-sans`} suppressHydrationWarning>
             <head>
-                <link rel="stylesheet"
-                    href="https://fonts.googleapis.com/css?family=Poppins&display=optional" />
             </head>
             <body>
                 <ThemeProvider

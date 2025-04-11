@@ -80,7 +80,7 @@ html[data-theme="light"] {
 
 /* Typography */
 * {
-  font-family: "Poppins", Helvetica, sans-serif;
+  font-family: var(--font-poppins);
   color: var(--text-color);
   max-inline-size: var(--measure);
 }

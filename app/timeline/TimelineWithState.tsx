@@ -51,18 +51,23 @@ export default function TimelineWithState({ timeline: initialTimeline }: { timel
         if (item == selectedItem) {
             setSelectedItem(null);
             const scrollY = document.body.style.top;
-            // document.body.style.position = '';
             document.body.style.top = '';
             window.scrollTo(0, parseInt(scrollY || '0') * -1);
-            document.getElementsByTagName('main')[0].style.pointerEvents = 'auto';
-            document.getElementsByClassName('top-nav-buttons')[0].style.visibility = 'hidden';
+            const mainElement = document.getElementsByTagName('main')[0];
+            if (mainElement) {
+                mainElement.style.pointerEvents = 'auto';
+            }
+            const topNavButtons = document.getElementById('top-nav-buttons');
+            if (topNavButtons) {
+                topNavButtons.style.visibility = 'hidden';
+            }
         } else {
             setSelectedItem(item);
-            // document.body.style.position = 'fixed';
             document.body.style.top = `-${window.scrollY}px`;
-            document.getElementsByTagName('main')[0].style.pointerEvents = 'none';
-            document.getElementsByClassName('top-nav-buttons')[0].style.visibility = 'visible';
-        };
+            const mainElement = document.getElementsByTagName('main')[0];
+            if (mainElement) mainElement.style.pointerEvents = 'none';
+            const topNavButtons = document.getElementById('top-nav-buttons'); if (topNavButtons) topNavButtons.style.visibility = 'visible';
+        }
     }
 
     const handleClosePane = () => {
@@ -71,8 +76,12 @@ export default function TimelineWithState({ timeline: initialTimeline }: { timel
         // document.body.style.position = '';
         document.body.style.top = '';
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
-        document.getElementsByTagName('main')[0].style.pointerEvents = 'auto';
-        document.getElementsByClassName('top-nav-buttons')[0].style.visibility = 'hidden';
+        const mainElement = document.getElementsByTagName('main')[0];
+        if (mainElement) mainElement.style.pointerEvents = 'auto';
+        const topNavButtons = document.getElementById('top-nav-buttons');
+        if (topNavButtons) {
+            topNavButtons.style.visibility = 'hidden';
+        }
     };
 
     const handleFilterChange = useCallback((filterType: string, value: string) => {

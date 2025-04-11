@@ -182,7 +182,7 @@ export default function TimelineContent({
     return (
         <>
             <TimelineFixed ref={fixedDateRef}>
-                <div className='top-nav-buttons'>
+                <div id='top-nav-buttons'>
                     <button
                         onClick={handleNext}
                         disabled={totalItems <= 1}
