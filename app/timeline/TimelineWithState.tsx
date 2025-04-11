@@ -2,48 +2,94 @@
 
 import { TimelineItem } from '@/lib/sanity';
 import TimelineContent from './TimelineContent';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+const getQueryParamAsArray = (param: string | string[] | null): string[] => {
+    if (!param) return [];
+    if (Array.isArray(param)) return param;
+    return param.split(',').map(s => s.trim()).filter(Boolean);
+};
 
 export default function TimelineWithState({ timeline: initialTimeline }: { timeline: TimelineItem[] }) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const [selectedItem, setSelectedItem] = useState<TimelineItem | null>(null);
-    const [filters, setFilters] = useState<{ type: string[]; employment: string[] }>({ type: [], employment: [] }); // State for filters
+    const [filters, setFilters] = useState<{
+        type: string[];
+        employment: string[]
+    }>(() => {
+        const initialType = getQueryParamAsArray(searchParams.get('type'));
+        const initialEmployment = getQueryParamAsArray(searchParams.get('employment'));
+        return {
+            type: initialType,
+            employment: initialEmployment,
+        };
+    });
+
+    useEffect(() => {
+        const current = new URLSearchParams(Array.from(searchParams.entries()));
+
+        if (filters.type.length > 0) {
+            current.set('type', filters.type.join(','));
+        } else {
+            current.delete('type');
+        }
+
+        if (filters.employment.length > 0) {
+            current.set('employment', filters.employment.join(','));
+        } else {
+            current.delete('employment');
+        }
+
+        const search = current.toString();
+        const query = search ? `?${search}` : '';
+        router.replace(`/timeline${query}`, { scroll: false });
+    }, [filters, router, searchParams])
 
     const handleItemClick = (item: TimelineItem) => {
         if (item == selectedItem) {
             setSelectedItem(null);
             const scrollY = document.body.style.top;
-            document.body.style.position = '';
+            // document.body.style.position = '';
             document.body.style.top = '';
             window.scrollTo(0, parseInt(scrollY || '0') * -1);
             document.getElementsByTagName('main')[0].style.pointerEvents = 'auto';
+            document.getElementsByClassName('top-nav-buttons')[0].style.visibility = 'hidden';
         } else {
             setSelectedItem(item);
-            document.body.style.position = 'fixed';
+            // document.body.style.position = 'fixed';
             document.body.style.top = `-${window.scrollY}px`;
             document.getElementsByTagName('main')[0].style.pointerEvents = 'none';
+            document.getElementsByClassName('top-nav-buttons')[0].style.visibility = 'visible';
         };
     }
 
     const handleClosePane = () => {
         setSelectedItem(null);
         const scrollY = document.body.style.top;
-        document.body.style.position = '';
+        // document.body.style.position = '';
         document.body.style.top = '';
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
         document.getElementsByTagName('main')[0].style.pointerEvents = 'auto';
+        document.getElementsByClassName('top-nav-buttons')[0].style.visibility = 'hidden';
     };
 
-    const handleFilterChange = (filterType: string, value: string) => {
+    const handleFilterChange = useCallback((filterType: string, value: string) => {
         setFilters((prevFilters) => {
-            const updatedFilters = { ...prevFilters };
-            if (updatedFilters[filterType as keyof typeof updatedFilters].includes(value)) {
-                updatedFilters[filterType as keyof typeof updatedFilters] = updatedFilters[filterType as keyof typeof updatedFilters].filter((item) => item !== value);
+            const currentValues = prevFilters[filterType as keyof typeof filters];
+            let updatedValues;
+            if (currentValues.includes(value)) {
+                updatedValues = currentValues.filter((item) => item !== value);
             } else {
-                updatedFilters[filterType as keyof typeof updatedFilters].push(value);
+                updatedValues = [...currentValues, value];
             }
-            return updatedFilters;
+            return {
+                ...prevFilters,
+                [filterType]: updatedValues,
+            };
         });
-    };
+    }, []);
 
     return (
         <TimelineContent

@@ -1,80 +1,17 @@
 "use client";
 
 import { TimelineItem } from '@/lib/sanity';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, intervalToDuration } from 'date-fns';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 
+import { displayDuration } from '@/lib/utils';
 import TimelineContentItem from './TimelineContentItem';
-import { TimelineFixedDate } from './TimelineFixedDate.component';
+import { TimelineItemTitle } from './TimelineItemTitle';
+import { StyledDetailPane, StyledDetailPaneWrapper, TimelineFixed } from './styles';
 import { Stack } from '../components/layout/stack';
-import { Imposter } from '../components/layout/imposter';
-
-import styled, { css } from 'styled-components'
-
-const StyledDetailPaneWrapper = styled(Imposter)`
-  background-color: var(--background-color);
-  min-width: 100vw;
-  height: 100vh;
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  visibility: hidden;
-  opacity: 0;
-  transition:
-    visibility 0s,
-    opacity 0.2s ease-in-out;
-
-  &.selected {
-    visibility: visible;
-    opacity: 1;
-
-    imposter-l {
-      transform: translate(0, 0);
-      transition: 0.2s transform 0.3s ease-in-out;
-    }
-  }
-`;
-
-const StyledDetailPane = styled(Imposter)`
-    position: fixed;
-    inset-block-start: 0;
-    inset-inline-start: 30%;
-    transform: none;
-    min-width: calc(70% - 1rem);
-    height: 100%;
-    overflow-y: auto;
-    margin-inline-start: 1rem;
-    padding: 10vh 2rem 2rem 2rem;
-    background-color: var(--background-color);
-    color: var(--primary-color);
-    border-left: 1.5px solid var(--primary-color);
-    transform: translate(100%, 0);
-
-    h2 {
-      margin-block-end: 2rem;
-    }
-
-    .detail-pane-close {
-        position: absolute;
-        top: 1rem;
-        left: 2rem;
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1.5rem;
-        color: var(--dark-gray);
-        transition: color 0.2s ease-in-out;
-
-        &:hover {
-            color: var(--accent-color);
-        }
-    }
-`
-
 
 
 export default function TimelineContent({
@@ -96,6 +33,7 @@ export default function TimelineContent({
     handleFilterChange: (filterType: string, value: string) => void
 }) {
     const [currentDate, setCurrentDate] = useState<string | null>(null);
+    // const [dateSecondLine, setDateSecondLine] = useState<string | null>(null);
     const timelineRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
     const [currentSectionItem, setcurrentSectionItem] = useState<TimelineItem | null>(null);
 
@@ -108,15 +46,36 @@ export default function TimelineContent({
         return typeMatch && employmentMatch;
     });
 
+    const currentIndex = selectedItem ? filteredTimeline.findIndex(i => i._id === selectedItem._id) : 0;
+    const totalItems = filteredTimeline.length;
+
+    const handleNext = () => {
+        if (totalItems <= 1) return;
+        const nextIndex = (currentIndex + 1) % totalItems; // Wrap around
+        handleItemClick(filteredTimeline[nextIndex]);
+    };
+
+    const handlePrevious = () => {
+        if (totalItems <= 1) return;
+        const prevIndex = (currentIndex - 1 + totalItems) % totalItems; // Wrap around correctly for negative
+        handleItemClick(filteredTimeline[prevIndex]);
+    };
 
     const updateFixedDate = useCallback(() => {
         if (selectedItem && selectedItem.startDate) {
             setCurrentDate(format(parseISO(selectedItem.startDate), 'MMMM, yyyy'));
+            let duration = selectedItem.startDate && selectedItem.endDate ? intervalToDuration({
+                start: parseISO(selectedItem.startDate),
+                end: parseISO(selectedItem.endDate)
+            }) : null;
+            let contract = selectedItem.hasOwnProperty('is_contract') ? ( selectedItem.is_contract ? ', contract' : ', permanent') : '';
+            // setDateSecondLine(`${displayDuration(duration)}${contract}`);
             return;
         }
         const fixedDateRect = fixedDateRef.current?.getBoundingClientRect();
         if (!fixedDateRect || filteredTimeline.length === 0) {
             setCurrentDate(null);
+            // setDateSecondLine('');
             return;
         }
 
@@ -150,14 +109,22 @@ export default function TimelineContent({
         if (currentSectionItem && currentSectionItem.startDate) {
             try {
                 setCurrentDate(format(parseISO(currentSectionItem.startDate), 'MMMM, yyyy'));
+                let duration = currentSectionItem.startDate && currentSectionItem.endDate ? intervalToDuration({
+                    start: parseISO(currentSectionItem.startDate),
+                    end: parseISO(currentSectionItem.endDate)
+                }) : null;
+                let contract = currentSectionItem.hasOwnProperty('is_contract') ? ( currentSectionItem.is_contract ? ', contract' : ', permanent') : '';
+                // setDateSecondLine(`${displayDuration(duration)}${contract}`);
             } catch (e) {
                 console.error("Error formatting date:", e);
                 setCurrentDate("Invalid Date");
+                // setDateSecondLine('');
             }
         } else {
             setCurrentDate(null);
+            // setDateSecondLine('');
         }
-    }, [filteredTimeline]);
+    }, [currentSectionItem, selectedItem, filteredTimeline]);
 
     useEffect(() => {
         const map = timelineRefs.current;
@@ -210,39 +177,47 @@ export default function TimelineContent({
         }
     }, []);
 
+    // console.log(filters);
+
     return (
         <>
-            <main className="timeline">
-                <TimelineFixedDate ref={fixedDateRef}>
-                    {currentDate}
-                </TimelineFixedDate>
-                <div className="timeline-filters">
-                    <div className="timeline-filter-group">
-                        <button className={filters.type.includes('experience') ? 'active' : ''} onClick={() => handleFilterChange('type', 'experience')}>Experience</button>
-                        <button className={filters.type.includes('project') ? 'active' : ''} onClick={() => handleFilterChange('type', 'project')}>Project</button>
-                        <button className={filters.type.includes('education') ? 'active' : ''} onClick={() => handleFilterChange('type', 'education')}>Education</button>
-                    </div>
-                    <div className="timeline-filter-group">
-                        <button className={filters.employment.includes('contract') ? 'active' : ''} onClick={() => handleFilterChange('employment', 'contract')}>Contract</button>
-                        <button className={filters.employment.includes('permanent') ? 'active' : ''} onClick={() => handleFilterChange('employment', 'permanent')}>Permanent</button>
-                    </div>
+            <TimelineFixed ref={fixedDateRef}>
+                <div className='top-nav-buttons'>
+                    <button
+                        onClick={handleNext}
+                        disabled={totalItems <= 1}
+                        aria-label="Previous item"
+                    >
+                        &lt; Prev
+                    </button>
+                    <button
+                        onClick={handlePrevious}
+                        disabled={totalItems <= 1}
+                        aria-label="Next item"
+                    >
+                        Next &gt;
+                    </button>
                 </div>
-                <Stack role="list">
-                    {filteredTimeline.map((item) => {
-                        // console.log("item", item)
-                        return (
-                            <TimelineContentItem
-                                key={item._id}
-                                item={item}
-                                ref={(node) => setTimelineRef(node, item._id)}
-                                handleItemClick={handleItemClick}
-                                selected={selectedItem ? selectedItem._id === item._id : false}
-                                current={currentSectionItem ? currentSectionItem._id === item._id : false}
-                            />
-                        )
-                    })}
-                </Stack>
-            </main>
+                <div className="main">{currentDate}</div>
+                <div className='bottom'>
+                    {/* {dateSecondLine} */}
+                {/* Include <a onClick={() => handleFilterChange('type', 'experience')}>{filters.type.includes('experience') ? 'V' : 'O'} roles</a> (<a onClick={() => handleFilterChange('employment', 'contract')}>contract</a> or <a onClick={() => handleFilterChange('employment', 'permanent')}>permanent</a>), <a onClick={() => handleFilterChange('type', 'project')}>only projects</a> or <a onClick={() => handleFilterChange('type', 'education')}>only education</a> */}
+                </div>
+            </TimelineFixed>
+            <Stack role="list">
+                {filteredTimeline.map((item) => {
+                    return (
+                        <TimelineContentItem
+                            key={item._id}
+                            item={item}
+                            ref={(node) => setTimelineRef(node, item._id)}
+                            handleItemClick={handleItemClick}
+                            selected={selectedItem ? selectedItem._id === item._id : false}
+                            current={currentSectionItem ? currentSectionItem._id === item._id : false}
+                        />
+                    )
+                })}
+            </Stack>
             <StyledDetailPaneWrapper className={`${selectedItem ? 'selected' : ''}`}>
                 {selectedItem && (
                     <DetailPane item={selectedItem} onClose={handleClosePane} />)
@@ -257,30 +232,24 @@ function DetailPane({ item, onClose }: { item: TimelineItem | null; onClose: () 
         return null;
     }
 
-    let primaryTitle = item.type === 'Experience' ? (
-        item.role
-    ) : item.type === 'Project' ? (
-        item.projectTitle
-    ) : item.type === 'Education' ? (
-        item.course
-    ) : null
+    let primaryTitle =
+          item.type === 'Experience' ? item.role
+        : item.type === 'Project' ? item.projectTitle
+        : item.type === 'Education' ? item.course
+        : null;
 
-    let secondaryTitle = item.type === 'Experience' ? (
-        item.company?.name
-    ) : item.type === 'Education' ? (
-        item.institution
-    ) : null
+    let secondaryTitle =
+          item.type === 'Experience' ? item.company?.name
+        : item.type === 'Education' ? item.institution
+        : null;
+
     return (
         <StyledDetailPane>
             <button className="detail-pane-close" onClick={onClose}>
-                Close
+                × Close
             </button>
             <div className="detail-pane-content">
-                <h2>
-                    <span className="primaryTitle">{primaryTitle}</span>
-                    <br />
-                    <span className="secondaryTitle">{secondaryTitle}</span>
-                </h2>
+                <TimelineItemTitle primaryTitle={primaryTitle} secondaryTitle={secondaryTitle} highlighted={true} />
                 {item.details && (
                     <PortableText value={item.details} />
                 )}

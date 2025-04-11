@@ -19,7 +19,7 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning>
             <head>
                 <link rel="stylesheet"
-                    href="https://fonts.googleapis.com/css?family=Poppins" />
+                    href="https://fonts.googleapis.com/css?family=Poppins&display=optional" />
             </head>
             <body>
                 <ThemeProvider

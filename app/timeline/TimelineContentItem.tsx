@@ -10,6 +10,7 @@ import styled, { css } from 'styled-components';
 import { displayDuration } from '@/lib/utils';
 
 import {Sidebar} from '../components/layout/sidebar'
+import { TimelineItemTitle } from './TimelineItemTitle';
 
 const StyledTimelineItem = styled(Sidebar)`
     cursor: pointer;
@@ -21,14 +22,10 @@ const StyledTimelineItem = styled(Sidebar)`
       color: var(--secondary-color);
       opacity: 0;
       transition: opacity 0.2s ease-in-out;
-
-      /* &.current {
-                opacity: 1;
-            } */
     }
 
-    .primaryTitle {
-      color: var(--accent-color);
+    & > :last-child {
+        padding-inline-start: calc(2rem + 1px);
     }
 
     .tag {
@@ -41,6 +38,12 @@ const StyledTimelineItem = styled(Sidebar)`
     }
 
     &:hover {
+      .primaryTitle {
+        color: var(--highlight-color);
+        transition: color 0.2s ease-in-out;
+      }
+
+
       .date {
         opacity: 1;
       }
@@ -57,21 +60,6 @@ interface TimelineContentItemProps {
 const TimelineContentItem = forwardRef<HTMLDivElement, TimelineContentItemProps>(
     ({ item, handleItemClick, selected, current }, ref) => {
 
-
-        // export default function TimelineContentItem(
-        //     {
-        //         item,
-        //         ref,
-        //         handleItemClick,
-        //         selected
-        //     }:
-        //         {
-        //             item: TimelineItem;
-        //             ref: any;
-        //             handleItemClick: (item: TimelineItem) => void;
-        //             selected: boolean;
-        //         }
-        // ) {
         let classes = "timeline-item";
         selected && (classes += " selected");
         current && (classes += " current");
@@ -116,11 +104,7 @@ const TimelineContentItem = forwardRef<HTMLDivElement, TimelineContentItemProps>
                     {dateSecondLine}
                 </div>
                 <div>
-                    <h2>
-                        <span className="primaryTitle">{primaryTitle}</span>
-                        <br />
-                        <span className="secondaryTitle">{secondaryTitle}</span>
-                    </h2>
+                    <TimelineItemTitle primaryTitle={primaryTitle} secondaryTitle={secondaryTitle} highlighted={false} />
                     <div>
                         {tags.map((tag) => (
                             <span className="tag" key={tag}>{tag}</span>

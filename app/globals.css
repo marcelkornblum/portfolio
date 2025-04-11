@@ -35,22 +35,26 @@
   --primary-color-dark: var(--base3);
   --secondary-color-dark: var(--base0);
   --accent-color-dark: var(--cyan);
+  --highlight-color-dark: var(--violet);
   --background-color-dark: var(--base03);
 
   /* --- Light Theme (Solarized Dark) --- */
   --primary-color-light: var(--base03);
   --secondary-color-light: var(--base00);
   --accent-color-light: var(--cyan);
+  --highlight-color-light: var(--orange);
   --background-color-light: var(--base3);
 
   /* --- Apply Dark Theme --- */
   --primary-color: var(--primary-color-dark);
   --secondary-color: var(--secondary-color-dark);
   --accent-color: var(--accent-color-dark);
+  --highlight-color: var(--highlight-color-dark);
   --background-color: var(--background-color-dark);
   --primary-color-inverse: var(--primary-color-light);
   --secondary-color-inverse: var(--secondary-color-light);
   --accent-color-inverse: var(--accent-color-light);
+  --highlight-color-inverse: var(--hightlight-color-light);
   --background-color-inverse: var(--background-color-light);
 
   /* Typography */
@@ -65,10 +69,12 @@ html[data-theme="light"] {
   --primary-color: var(--primary-color-light);
   --secondary-color: var(--secondary-color-light);
   --accent-color: var(--accent-color-light);
+  --highlight-color: var(--highlight-color-light);
   --background-color: var(--background-color-light);
   --primary-color-inverse: var(--primary-color-dark);
   --secondary-color-inverse: var(--secondary-color-dark);
   --accent-color-inverse: var(--accent-color-dark);
+  --highlight-color-inverse: var(--hightlight-color-dark);
   --background-color-inverse: var(--background-color-dark);
 }
 
@@ -87,6 +93,7 @@ nav,
 main,
 footer {
   max-inline-size: none;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -120,7 +127,7 @@ h3 {
 }
 
 p {
-  margin-block-end: 1rem;
+  margin-block-end: 0.3rem;
 }
 
 /* Links */
@@ -149,4 +156,8 @@ a:focus {
 
 .color\:accent {
   color: var(--accent-color);
+}
+
+.color\:highlight {
+  color: var(--highlight-color);
 }
