@@ -8,32 +8,7 @@ import { FaSun, FaMoon } from 'react-icons/fa';
 import styled, { css } from 'styled-components';
 
 const ThemeToggleButton = styled.button`
-  position: fixed;
-  bottom: 1.25rem; /* 20px */
-  left: 1.25rem; /* 20px */
-  z-index: 50;
-  padding: 0.75rem; /* 12px */
-  border-radius: 9999px; /* full */
-  border: none;
-  cursor: pointer;
-  background-color: var(--button-bg);
-  color: var(--button-text);
-  transition:
-    background-color 0.2s ease-in-out,
-    color 0.2s ease-in-out;
-  display: flex; /* Needed for icon alignment if not already handled */
-  align-items: center;
-  justify-content: center;
 
-  &:hover {
-    background-color: var(--button-hover-bg);
-    color: var(--button-hover-text);
-  }
-
-  svg {
-    width: 1.25rem; /* 20px */
-    height: 1.25rem; /* 20px */
-  }
 `;
 
 export function ThemeToggle() {

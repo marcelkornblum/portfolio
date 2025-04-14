@@ -6,12 +6,13 @@ import { format, parseISO } from 'date-fns';
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
 const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION;
+const useCDN = (process.env.NEXT_SANITY_USE_CDN === "true");
 
 export const client = createClient({
     projectId,
     dataset,
     apiVersion,
-    useCdn: false,
+    useCdn: useCDN,
 });
 
 export interface TimelineItem {
@@ -120,14 +121,14 @@ export async function getTimeline(): Promise<TimelineItem[]> {
             timelineItem.institution = item.institution;
             timelineItem.course = item.course;
         }
-        console.log("timelineItem", timelineItem);
+        // console.log("timelineItem", timelineItem);
         return timelineItem;
     });
 }
 
 export interface About {
     _id: string;
-    title: string;
+    name: string;
     details: any;
 }
 
@@ -136,7 +137,7 @@ export async function getAbout(): Promise<About> {
     const query = groq`
         *[_type == "about"][0] {
             _id,
-            title,
+            name,
             details,
         }
     `;
@@ -146,19 +147,25 @@ export async function getAbout(): Promise<About> {
 
 export interface Contact {
     _id: string;
-    title: string;
+    type: string;
+    display: string;
+    link: string;
+    logo: string;
     details: any;
 }
 
-export async function getContact(): Promise<Contact> {
+export async function getContacts(): Promise<Contact[]> {
     const query = groq`
-        *[_type == "contact"][0] {
+        *[_type == "contact"] {
             _id,
-            title,
+            type,
+            display,
+            link,
+            logo,
             details,
         }
     `;
-    const result = await client.fetch<Contact>(query);
+    const result = await client.fetch<Contact[]>(query);
     return result;
 }
 

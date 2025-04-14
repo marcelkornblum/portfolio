@@ -1,13 +1,13 @@
-import { getContact, Contact } from '@/lib/sanity';
+import { getContacts, Contact } from '@/lib/sanity';
 import ContactContent from './ContactContent';
 
 // This is now a Server Component
 export default async function ContactPage() {
-    const contact = await getContact();
+    const contacts = await getContacts();
 
     return (
         <main>
-            <ContactContent contact={contact} />
+            <ContactContent contacts={contacts} />
         </main>
     );
 }

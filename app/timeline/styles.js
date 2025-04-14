@@ -2,20 +2,20 @@ import styled, { css } from "styled-components";
 import { Imposter } from "../components/layout/imposter";
 
 export const TimelineFixed = styled.div`
-  position: fixed;
+  position: sticky;
   top: 6.5rem;
   left: 0;
   width: 30%;
   color: var(--primary-color);
   z-index: 10;
-  text-align: right;
+  text-align: end;
   white-space: nowrap;
   padding: 2rem 0;
   background: linear-gradient(
-    rgb(0, 0, 0, 0) 15%,
-    var(--background-color) 25%,
-    var(--background-color) 75%,
-    rgb(0, 0, 0, 0) 85%
+    rgb(0, 0, 0, 0) 10%,
+    var(--background-color) 20%,
+    var(--background-color) 80%,
+    rgb(0, 0, 0, 0) 90%
   );
   display: flex;
   flex-direction: column;
@@ -48,7 +48,7 @@ export const TimelineFixed = styled.div`
     }
   }
 
-  .main {
+  .middle {
     display: block;
     width: 100%;
     font-size: var(--s1);
@@ -62,9 +62,17 @@ export const TimelineFixed = styled.div`
 
     a {
       cursor: pointer;
-      text-decoration: underline dotted;
-      font-weight: 700;
+      color: var(--secondary-color);
+
+      &.subfilter {
+        margin-inline-end: 1rem;
+      }
+
+      &:hover {
+        text-decoration: underline dotted;
+      }
     }
+
   }
 `;
 

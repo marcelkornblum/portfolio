@@ -198,10 +198,18 @@ export default function TimelineContent({
                         Next &gt;
                     </button>
                 </div>
-                <div className="main">{currentDate}</div>
+                <div className="middle">{currentDate}</div>
                 <div className='bottom'>
+                    <a onClick={() => handleFilterChange('type', 'experience')}>roles {filters.type.includes('experience') ? '●' : '○'}</a>
+                    <br />
+                    <a className='subfilter' onClick={() => handleFilterChange('employment', 'permanent')}> only permanent {filters.employment.includes('permanent') ? '●' : '○'}</a>
+                    <br />
+                    <a className='subfilter' onClick={() => handleFilterChange('employment', 'contract')}>only contract {filters.employment.includes('contract') ? '●' : '○'}</a>
+                    <br />
+                    <a onClick={() => handleFilterChange('type', 'project')}>projects {filters.type.includes('project') ? '●' : '○'}</a>
+                    <br />
+                    <a onClick={() => handleFilterChange('type', 'education')}>education {filters.type.includes('education') ? '●' : '○'}</a>
                     {/* {dateSecondLine} */}
-                {/* Include <a onClick={() => handleFilterChange('type', 'experience')}>{filters.type.includes('experience') ? 'V' : 'O'} roles</a> (<a onClick={() => handleFilterChange('employment', 'contract')}>contract</a> or <a onClick={() => handleFilterChange('employment', 'permanent')}>permanent</a>), <a onClick={() => handleFilterChange('type', 'project')}>only projects</a> or <a onClick={() => handleFilterChange('type', 'education')}>only education</a> */}
                 </div>
             </TimelineFixed>
             <Stack role="list">

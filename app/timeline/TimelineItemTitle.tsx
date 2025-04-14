@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const StyledTitle = styled.h2<{ $highlighted: boolean }>`
+const StyledTitle = styled.h3<{ $highlighted: boolean }>`
     margin-block-end: 0.3em;
 
     .primaryTitle {
@@ -20,12 +20,12 @@ export function TimelineItemTitle({ primaryTitle, secondaryTitle, highlighted=fa
     return (
         <StyledTitle $highlighted={highlighted}>
             {primaryTitle && (
-                <>
-                    <span className="primaryTitle">{primaryTitle}</span>
-                    <br />
-                </>
+                <span className="primaryTitle">{primaryTitle}</span>
             )}
-            <span className="secondaryTitle">{secondaryTitle}</span>
+            {primaryTitle && secondaryTitle && (<br />)}
+            {secondaryTitle && (
+                <span className="secondaryTitle">{secondaryTitle}</span>
+            )}
         </StyledTitle>
     );
 }

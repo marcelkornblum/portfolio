@@ -3,7 +3,7 @@
 import { TimelineItem } from '@/lib/sanity';
 import TimelineContent from './TimelineContent';
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const getQueryParamAsArray = (param: string | string[] | null): string[] => {
     if (!param) return [];
@@ -11,16 +11,26 @@ const getQueryParamAsArray = (param: string | string[] | null): string[] => {
     return param.split(',').map(s => s.trim()).filter(Boolean);
 };
 
+const allFiltersActive = {
+    type: ['experience', 'project', 'education'],
+    employment: ['permanent', 'contract']
+}
+
 export default function TimelineWithState({ timeline: initialTimeline }: { timeline: TimelineItem[] }) {
     const router = useRouter();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
     const [selectedItem, setSelectedItem] = useState<TimelineItem | null>(null);
     const [filters, setFilters] = useState<{
         type: string[];
         employment: string[]
     }>(() => {
-        const initialType = getQueryParamAsArray(searchParams.get('type'));
-        const initialEmployment = getQueryParamAsArray(searchParams.get('employment'));
+        let initialType = getQueryParamAsArray(searchParams.get('type'));
+        let initialEmployment = getQueryParamAsArray(searchParams.get('employment'));
+        if (initialType.length === 0 && initialEmployment.length === 0) {
+            initialType = allFiltersActive.type;
+            initialEmployment = allFiltersActive.employment;
+        }
         return {
             type: initialType,
             employment: initialEmployment,
@@ -43,9 +53,50 @@ export default function TimelineWithState({ timeline: initialTimeline }: { timel
         }
 
         const search = current.toString();
-        const query = search ? `?${search}` : '';
-        router.replace(`/timeline${query}`, { scroll: false });
-    }, [filters, router, searchParams])
+        const query = current.size > 0 ? `?${search}` : filters.type.join(',');
+        console.log('handle filter',searchParams,  search, current);
+        router.replace(`${pathname}${query}`, { scroll: false });
+    }, [filters, router, searchParams, pathname]);
+
+    const handleFilterChange = useCallback((filterType: string, value: string) => {
+        setFilters((prevFilters) => {
+            const currentValues = prevFilters[filterType as keyof typeof filters];
+            let updatedValues;
+            let otherFilterValues: Array<string> = []
+            if (filterType == 'type' && value == 'experience') {
+                if (!currentValues.includes(value)) {
+                    otherFilterValues = allFiltersActive.employment;
+                }
+                prevFilters = {
+                    ...prevFilters,
+                    employment: otherFilterValues
+                }
+            } else if (filterType == 'employment') {
+                if (currentValues.includes(value) && prevFilters[filterType].length == 1) {
+                    prevFilters = {
+                        ...prevFilters,
+                        type: prevFilters.type.filter(
+                            (item) => item !== 'experience')
+                        }
+                } else if (prevFilters[filterType].length == 0) {
+                    prevFilters = {
+                        ...prevFilters,
+                         type: [...prevFilters.type, 'experience']
+                    }
+                }
+            }
+
+            if (currentValues.includes(value)) {
+                updatedValues = currentValues.filter((item) => item !== value);
+            } else {
+                updatedValues = [...currentValues, value];
+            }
+            return {
+                ...prevFilters,
+                [filterType]: updatedValues,
+            };
+        });
+    }, []);
 
     const handleItemClick = (item: TimelineItem) => {
         if (item == selectedItem) {
@@ -83,22 +134,6 @@ export default function TimelineWithState({ timeline: initialTimeline }: { timel
             topNavButtons.style.visibility = 'hidden';
         }
     };
-
-    const handleFilterChange = useCallback((filterType: string, value: string) => {
-        setFilters((prevFilters) => {
-            const currentValues = prevFilters[filterType as keyof typeof filters];
-            let updatedValues;
-            if (currentValues.includes(value)) {
-                updatedValues = currentValues.filter((item) => item !== value);
-            } else {
-                updatedValues = [...currentValues, value];
-            }
-            return {
-                ...prevFilters,
-                [filterType]: updatedValues,
-            };
-        });
-    }, []);
 
     return (
         <TimelineContent

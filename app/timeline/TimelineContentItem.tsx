@@ -13,10 +13,8 @@ import {Sidebar} from '../components/layout/sidebar'
 import { TimelineItemTitle } from './TimelineItemTitle';
 
 const StyledTimelineItem = styled(Sidebar)`
-    cursor: pointer;
-
     .date {
-      text-align: right;
+      text-align: end;
       margin-block-start: 0.3em;
       line-height: 1.2;
       color: var(--secondary-color);
@@ -25,6 +23,7 @@ const StyledTimelineItem = styled(Sidebar)`
     }
 
     & > :last-child {
+        cursor: pointer;
         padding-inline-start: calc(2rem + 1px);
     }
 
@@ -94,7 +93,6 @@ const TimelineContentItem = forwardRef<HTMLDivElement, TimelineContentItemProps>
             <StyledTimelineItem
                 id={item._id}
                 ref={ref}
-                onClick={() => handleItemClick(item)}
                 role="listitem"
                 className={classes}
             >
@@ -103,7 +101,9 @@ const TimelineContentItem = forwardRef<HTMLDivElement, TimelineContentItemProps>
                     <br />
                     {dateSecondLine}
                 </div>
-                <div>
+                <div
+                    onClick={() => handleItemClick(item)}
+                    >
                     <TimelineItemTitle primaryTitle={primaryTitle} secondaryTitle={secondaryTitle} highlighted={false} />
                     <div>
                         {tags.map((tag) => (

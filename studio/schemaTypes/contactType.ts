@@ -15,7 +15,7 @@ export const contactType = defineType({
         }),
         defineField({
             name: 'link',
-            type: 'url',
+            type: 'string',
         }),
         defineField({
             name: 'logo',
