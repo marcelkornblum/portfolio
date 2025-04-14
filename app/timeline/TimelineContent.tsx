@@ -42,7 +42,7 @@ export default function TimelineContent({
 
     const filteredTimeline = initialTimeline.filter((item) => {
         const typeMatch = filters.type.length === 0 || filters.type.includes(item.type.toLowerCase());
-        const employmentMatch = filters.employment.length === 0 || (item.type === 'Experience' && filters.employment.includes(item.is_contract ? 'contract' : 'permanent'));
+        const employmentMatch = filters.employment.length === 0 || (item.type === 'Experience' && filters.employment.includes(item.is_contract ? 'contract' : 'permanent')) || item.type != 'Experience';
         return typeMatch && employmentMatch;
     });
 
