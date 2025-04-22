@@ -3,51 +3,13 @@
 import React, { forwardRef } from 'react';
 import { TimelineItem } from '@/lib/sanity';
 import { format, parseISO, intervalToDuration } from 'date-fns';
-import Link from 'next/link';
 import { PortableText } from '@portabletext/react';
-import styled, { css } from 'styled-components';
 
 import { displayDuration } from '@/lib/utils';
 
-import {Sidebar} from '../components/layout/sidebar'
 import { TimelineItemTitle } from './TimelineItemTitle';
+import { StyledTimelineItem, Tag } from './styles';
 
-const StyledTimelineItem = styled(Sidebar)`
-    .date {
-      text-align: end;
-      margin-block-start: 0.3em;
-      line-height: 1.2;
-      color: var(--secondary-color);
-      opacity: 0;
-      transition: opacity 0.2s ease-in-out;
-    }
-
-    & > :last-child {
-        cursor: pointer;
-        padding-inline-start: calc(2rem + 1px);
-    }
-
-    .tag {
-      color: var(--secondary-color);
-      font-size: var(--s0);
-    }
-
-    .summary {
-      color: var(--primary-color);
-    }
-
-    &:hover {
-      .primaryTitle {
-        color: var(--highlight-color);
-        transition: color 0.2s ease-in-out;
-      }
-
-
-      .date {
-        opacity: 1;
-      }
-    }
-`;
 
 interface TimelineContentItemProps {
     item: TimelineItem;
@@ -107,7 +69,7 @@ const TimelineContentItem = forwardRef<HTMLDivElement, TimelineContentItemProps>
                     <TimelineItemTitle primaryTitle={primaryTitle} secondaryTitle={secondaryTitle} highlighted={false} />
                     <div>
                         {tags.map((tag) => (
-                            <span className="tag" key={tag}>{tag}</span>
+                            <Tag key={tag}>{tag}</Tag>
                         ))}
                     </div>
                     <div className='summary'>

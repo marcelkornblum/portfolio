@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import { Imposter } from "../components/layout/imposter";
+import { Sidebar } from "../components/layout/sidebar";
 
 export const TimelineFixed = styled.div`
   position: sticky;
@@ -10,7 +11,7 @@ export const TimelineFixed = styled.div`
   z-index: 10;
   text-align: end;
   white-space: nowrap;
-  padding: 2rem 0;
+  padding: 1.8rem 0;
   background: linear-gradient(
     rgb(0, 0, 0, 0) 10%,
     var(--background-color) 20%,
@@ -138,5 +139,52 @@ export const StyledDetailPane = styled.div`
     &:hover {
       color: var(--accent-color);
     }
+  }
+`;
+
+export const StyledTimelineItem = styled(Sidebar)`
+  .date {
+    text-align: end;
+    margin-block-start: 0.3em;
+    line-height: 1.2;
+    color: var(--secondary-color);
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  & > :last-child {
+    cursor: pointer;
+    padding-inline-start: calc(2rem + 1px);
+  }
+
+  .tag {
+    color: var(--secondary-color);
+    font-size: var(--s0);
+  }
+
+  .summary {
+    color: var(--primary-color);
+  }
+
+  &:hover {
+    .primaryTitle {
+      color: var(--highlight-color);
+      transition: color 0.2s ease-in-out;
+    }
+
+    .date {
+      opacity: 1;
+    }
+  }
+`;
+
+export const Tag = styled.span`
+  font-size: var(--s0);
+  color: var(--secondary-color);
+  padding: 0 1rem 0 0;
+
+  &::before {
+    content: "▩";
+    padding: 0 0.5rem 0 0;
   }
 `;

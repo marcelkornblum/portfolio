@@ -11,6 +11,6 @@ export const Stack = styled.div`
   }
 
   & > * + * {
-    margin-block-start: var(--s1);
+    margin-block-start: var(--s2);
   }
 `;
