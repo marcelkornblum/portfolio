@@ -1,6 +1,7 @@
 import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
+import { vercelDeployTool } from 'sanity-plugin-vercel-deploy'
 import {schemaTypes} from './schemaTypes'
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || "";
@@ -13,7 +14,7 @@ export default defineConfig({
   projectId: projectId,
   dataset: dataset,
 
-  plugins: [structureTool(), visionTool()],
+  plugins: [structureTool(), visionTool(), vercelDeployTool()],
 
   schema: {
     types: schemaTypes,
